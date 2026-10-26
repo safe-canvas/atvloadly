@@ -100,6 +100,10 @@ func MountDeveloperDiskImage(ctx context.Context, id string) error {
 		return fmt.Errorf("mount is only supported on remote paired (RSD) devices")
 	}
 
+	if err := manager.PrepareManualDevice(ctx, device); err != nil {
+		return err
+	}
+
 	mgr := manager.NewScreenshotManager()
 	if _, err := mgr.EnsureMounted(ctx, device); err != nil {
 		return err
@@ -118,6 +122,10 @@ func TakeDeviceScreenshot(ctx context.Context, id string) (string, error) {
 
 	if device.Connection != model.DeviceConnectionRemote {
 		return "", fmt.Errorf("screenshot is only supported on remote paired (RSD) devices")
+	}
+
+	if err := manager.PrepareManualDevice(ctx, device); err != nil {
+		return "", err
 	}
 
 	mgr := manager.NewScreenshotManager()
@@ -268,24 +276,9 @@ func UpdateCoreADI() error {
 	return nil
 }
 
-// ResetAnisette removes the Anisette provisioning state so the next login or
-// install provisions it again. It mirrors upstream impactor ResetAnisetteData
-// which deletes the provisioning files under <data_path>
-// (see claration/impactor@321eac4).
-func ResetAnisette() error {
-	for _, name := range []string{"state.plist", "identifier", "adb.pb"} {
-		path := filepath.Join(app.SideloadDataDir(), name)
-		if err := os.Remove(path); err != nil && !os.IsNotExist(err) {
-			return err
-		}
-	}
-	log.Infof("Reset Anisette data. dir: %s", app.SideloadDataDir())
-	return nil
-}
-
-func ImportPairingFile(ip string, port string, data []byte) error {
+func ImportPairingFile(ip string, port string, manual bool, data []byte) error {
 	// Call manager to process the file
-	if err := manager.ImportPairingFile(ip, port, data); err != nil {
+	if err := manager.ImportPairingFile(ip, port, manual, data); err != nil {
 		return err
 	}
 
@@ -293,4 +286,10 @@ func ImportPairingFile(ip string, port string, data []byte) error {
 	manager.StartDeviceManager()
 
 	return nil
+}
+
+// DeleteManualDevice forgets a manually added device: its pairing files and
+// its in-memory entry are removed.
+func DeleteManualDevice(udid string) error {
+	return manager.DeleteManualDevice(udid)
 }
