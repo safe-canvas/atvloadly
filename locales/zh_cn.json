@@ -3,6 +3,18 @@
     "tray": {
         "open_browser": "打开浏览器",
         "open_log": "打开日志文件",
+        "open_at_login": "开机时启动",
+        "settings": "设置",
+        "settings_title": "设置",
+        "settings_description": "修改后需重启程序生效。",
+        "settings_port_label": "服务端口",
+        "settings_lan_label": "允许局域网访问",
+        "settings_lan_help": "同时接受本局域网（IPv4）内的连接。",
+        "settings_save": "保存",
+        "settings_cancel": "取消",
+        "settings_saved": "设置已保存，重启程序后生效。",
+        "settings_invalid_port": "请输入 1 到 65535 之间的有效 TCP 端口。",
+        "settings_save_error": "保存设置失败。",
         "quit": "退出程序"
     },
     "common": {
@@ -509,13 +521,14 @@
                 "update_coreadi_confirm": "确认要下载并更新 CoreADI 库文件吗？",
                 "anisette_server": "Anisette 服务器",
                 "anisette_server_default_tag": "默认",
-                "anisette_server_tips": "留空使用默认服务器。更换服务器后已有的 Anisette 数据会失效；如请求开始失败，请重置对应帐号。",
+                "anisette_server_tips": "留空使用默认服务器。如果更换服务器后还是请求失败，请尝试重置/删除对应帐号的 Anisette 数据。",
                 "save": "保存",
-                "reset_anisette": "重置 Anisette 数据",
-                "reset_anisette_select": "请选择帐号",
-                "reset_anisette_empty": "Anisette 数据按帐号重置，请先添加 Apple ID 帐号。",
+                "reset_anisette": "Anisette 数据",
+                "reset_anisette_empty": "没有保存 Anisette 数据的帐号。",
                 "reset_anisette_confirm": "确认要重置 {{email}} 的 Anisette 数据吗？下次使用该帐号时将生成新的设备身份，需要重新登录。",
+                "remove_anisette_confirm": "该帐号已不在登录列表中，确认要删除它残留的 Anisette 数据吗？",
                 "reset": "重置",
+                "delete": "删除",
                 "cancel": "取消",
                 "confirm": "确认",
                 "toast": {
@@ -524,6 +537,8 @@
                     "failed": "更新失败",
                     "reset_success": "已重置 {{email}} 的 Anisette 数据",
                     "reset_failed": "重置失败",
+                    "remove_success": "已删除 {{email}} 的 Anisette 数据",
+                    "remove_failed": "删除失败",
                     "server_success": "Anisette 服务器已保存",
                     "server_failed": "保存 Anisette 服务器失败"
                 }
@@ -672,6 +687,10 @@
             "submit": "开始配对"
         },
         "iphone": {
+            "warning1": "确保 iPhone 已开启开发者模式，系统版本为 iOS 17.4+",
+            "warning2": "使用 <a href=\"https://github.com/jkcoxson/idevice_pair\" target=\"_blank\" class=\"link\">idevice_pair</a> 导出 RPPairing 模式的 Pairing File 并开启 Wireless Debugging",
+            "warning3": "iPhone 自动刷新不保证稳定性，iPhone 需要解锁后才能正常远程刷新",
+            "warning4": "通过 Tailscale IP 连接需要接入 Wi-Fi",
             "device_label": "iPhone 设备",
             "device_placeholder": "例如 192.168.1.205，或从列表选择设备",
             "device_tips": "iPhone 需要先解锁屏幕，才能被发现和连接，支持局域网 IP 地址或 Tailscale IP 地址",

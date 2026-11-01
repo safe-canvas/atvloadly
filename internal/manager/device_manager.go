@@ -522,7 +522,8 @@ func (dm *DeviceManager) loadManualDevicesFromDir(dir string) {
 		previous.Store(k, v)
 		return true
 	})
-	dm.manualDevices = sync.Map{}
+	// Clear is safe with concurrent readers; replacing a used sync.Map is not.
+	dm.manualDevices.Clear()
 	matches, err := filepath.Glob(filepath.Join(dir, "*.json"))
 	if err != nil {
 		log.Err(err).Msg("Failed to list pairing files")
@@ -583,7 +584,7 @@ var discoverTunnelPortFunc = DiscoverManualTunnelPort
 // avoids a full-range scan, so it must not fail on a healthy device merely
 // because the overlay relay is slow: a single handshake gets the full dial
 // budget as its response deadline (the 800ms scan deadline is too tight for
-// the 0.3-1.1s relay RTT measured in doc/misc/remote-pairing-port-discovery.md)
+// the 0.3-1.1s relay RTT measured in docs/misc/remote-pairing-port-discovery.md)
 // and a transient loss is retried a few times before falling back to a scan.
 const (
 	rememberedProbeAttempts   = 3
@@ -792,7 +793,13 @@ func (dm *DeviceManager) CheckDevicePaired(identifier string, authTag string) (*
 // context: when ctx is cancelled (e.g. the device disconnects), the
 // plumesign subprocess is killed and the goroutine returns promptly.
 func (dm *DeviceManager) CheckDevicePairedContext(ctx context.Context, identifier string, authTag string) (*model.RemoteDevice, error) {
-	if !utils.ExistFiles(app.RemotePairingDir(), "*.plist") {
+	pairingDir := app.RemotePairingDir()
+	if !utils.ExistFiles(pairingDir, "*.plist") {
+		// A remote-pairing device can only be added once plumesign has written
+		// its pairing file here. Log the directory so a path mismatch (e.g. the
+		// engine writing under %APPDATA% while atvloadly reads ~/.config) is
+		// visible instead of silently leaving the device undiscovered.
+		log.Debugf("no pairing files in %s, skipping pairing check for %s", pairingDir, identifier)
 		return nil, nil
 	}
 
@@ -803,6 +810,7 @@ func (dm *DeviceManager) CheckDevicePairedContext(ctx context.Context, identifie
 		if ctx.Err() != nil {
 			return nil, ctx.Err()
 		}
+		log.Debugf("find-pairing failed for %s: %v: %s", identifier, err, strings.TrimSpace(string(data)))
 		return nil, err
 	}
 

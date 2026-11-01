@@ -31,6 +31,11 @@ type Options struct {
 	// Port overrides conf.Server.Port; zero keeps the configured port.
 	// Port -1 binds a random free port instead.
 	Port int
+	// ListenAddr overrides conf.Server.ListenAddr.
+	ListenAddr string
+	// Zeroconf overrides conf.Zeroconf (mDNS device discovery) when set; nil
+	// keeps the value from the config file or ZEROCONF_ENABLED.
+	Zeroconf *bool
 	// DataDir overrides conf.Server.DataDir, the directory holding the
 	// database, settings, keys and logs; empty keeps the configured dir.
 	DataDir string
@@ -46,6 +51,11 @@ func Run(opts Options) (addr string, stop func(), err error) {
 	}
 	if opts.DataDir != "" {
 		conf.Server.DataDir = opts.DataDir
+	}
+	// The command-line flag has the highest precedence over the config file
+	// and ZEROCONF_ENABLED, both of which InitConfig already applied.
+	if opts.Zeroconf != nil {
+		conf.Zeroconf = *opts.Zeroconf
 	}
 	settings, err := app.InitSettings(conf, opts.Debug)
 	if err != nil {
@@ -84,7 +94,11 @@ func Run(opts Options) (addr string, stop func(), err error) {
 	if opts.Port > 0 {
 		port = opts.Port
 	}
-	addr = fmt.Sprintf("%s:%d", conf.Server.ListenAddr, port)
+	listenAddr := conf.Server.ListenAddr
+	if opts.ListenAddr != "" {
+		listenAddr = opts.ListenAddr
+	}
+	addr = fmt.Sprintf("%s:%d", listenAddr, port)
 	if opts.Port < 0 {
 		// A random free port on loopback: the desktop app is not a network
 		// service and must not collide with anything already listening.

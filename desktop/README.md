@@ -28,11 +28,14 @@ macOS 12+ and Windows 10/11 (x64 / arm64).
 
 1. Starts the existing server (reusing the boot order of `cmd/server`: config → settings
    → logger → i18n → db → signing → secrets → tasks → device manager) on
-   `127.0.0.1:<random free port>`;
-2. Keeps an icon in the menu bar / notification area, with a menu holding "Open in
-   Browser", "Open Log File" and "Quit" (localized in the UI language);
+   `127.0.0.1:5533` by default;
+2. Keeps an icon in the menu bar / notification area, with localized "Open in Browser",
+   "Open Log File", "Settings", "Open at Login" and "Quit" actions; Settings is a
+   MyGo-native page for the server port and LAN access;
 3. Opens `http://127.0.0.1:<port>/` in the default browser once started, and shuts
-   down gracefully on quit.
+   down gracefully on quit. The port is stored in `server.port` and LAN access in
+   `server.listen_addr` (`127.0.0.1` or `0.0.0.0`) in the app data directory's
+   `config.yaml`; restart the app for changes to take effect.
 
 There is no main window: the app stays out of the Dock on macOS (`LSUIElement`) and
 shows no taskbar button on Windows. It does not use `mygo.Bind` typed IPC — the
@@ -48,6 +51,7 @@ desktop/
 └── app/
     ├── go.mod                   # separate module (mygo needs Go 1.27+, see decision #2)
     ├── main.go                  # shell entry: starts the server, tray icon, single instance, opens the browser
+    ├── settings.go              # reads/writes config.yaml server.port and server.listen_addr
     ├── locales.go               # embeds the server catalogs (copied from the root locales/ at build time)
     ├── plumesign.go             # resolves the plumesign resource path (PathResources first, PATH fallback)
     ├── mygo.config.ts           # mygo CLI config (LSUIElement, macOS signing, resources)
@@ -68,9 +72,10 @@ desktop/
 |---|----------|-----------|
 | 1 | **Shell + embedded server, not a Bind IPC rewrite** | `internal/*` (install manager, device manager, WS login/pair/progress) is reused whole, the frontend needs no changes, and the risk stays low |
 | 2 | **A separate `desktop/app/go.mod`** | The root module is go 1.25 and mygo needs Go 1.27+; isolating it keeps the main service build and CI untouched, while server code is reused by importing the root packages (see "How the server is reused") |
-| 3 | **Random port + 127.0.0.1 loopback** | Never collides with a port the user already uses; the desktop build serves nothing to the network |
-| 4 | **plumesign packed into resources** | mygo's platform resources mechanism packages it per platform, and `mygo build` signs the executables along with the app, which is what lets macOS Gatekeeper / Windows SmartScreen through |
-| 5 | **Config and data in the user directory** | A desktop app has no container `/data`; defaults to `~/Library/Application Support/atvloadly` (macOS) / `%APPDATA%\atvloadly` (Windows), with `server.work_dir` injected at startup |
+| 3 | **Port 5533 + configurable listen address** | Predictable local URL; the Settings page writes `server.port` and `server.listen_addr` (`127.0.0.1` local-only, `0.0.0.0` for LAN access) |
+| 4 | **Open at Login** | The tray checkbox uses MyGo's native per-platform login-item integration; login-launched instances stay in the tray without opening a browser, and macOS 13+ may require approval in System Settings |
+| 5 | **plumesign packed into resources** | mygo's platform resources mechanism packages it per platform, and `mygo build` signs the executables along with the app, which is what lets macOS Gatekeeper / Windows SmartScreen through |
+| 6 | **Config and data in the user directory** | A desktop app has no container `/data`; defaults to `~/Library/Application Support/atvloadly` (macOS) / `%APPDATA%\atvloadly` (Windows), with `server.work_dir` injected at startup |
 
 > The upstream plumesign release currently ships Linux packages only; its release
 > workflow already has the macOS/Windows targets (`plumesign-macos-universal`,
@@ -89,7 +94,7 @@ Two approaches:
   `desktop/app` call it, so the shell's footprint is one refactor plus one new package.
   - The tricky part: `web.Run` used to call `fiber.Listen(addr:port)` itself. It now has
     an entry point that takes a `net.Listener` (fiber supports `app.Listener(ln)`), so
-    the shell can bind a random port.
+    the shell can bind the configured loopback port.
 - **Option B (fallback): copy the boot sequence.** Write a slim bootstrap inside the
   desktop module. It duplicates code and the two boot paths drift apart; only fall back
   to it if Option A hits a cross-module compile problem.
@@ -180,13 +185,15 @@ Implementation notes:
   `plumesign-macos-universal.tar.gz` (unpacked for both darwin-arm64 and darwin-amd64,
   which `mygo build` lipos together) and `plumesign-windows-x86_64.exe` from the
   PlumeImpactor release into `desktop/app/resources/<platform>/bin/` (gitignored, not
-  committed). Assets upstream has not published yet (currently windows-arm64) warn
-  individually and the build continues.
+  committed). The release version is read from the `Dockerfile` download URL, so the
+  desktop bundle tracks the server image automatically; set `PLUMESIGN_VERSION` to
+  override it for a one-off build. Assets upstream has not published yet (currently
+  windows-arm64) warn individually and the build continues.
 - **Path resolution**: the existing `internal/exec` and manager code call the bare
   `"plumesign"` command; at startup the shell prepends `PathResources/bin` to the `PATH`
   environment variable (inherited by child processes), so the business code needs no
   changes. Verified end to end under a clean `env -i`: the packaged app's `check/afc`
-  endpoint ran the bundled plumesign 2.7.1-patch.5; unpackaged (`go run`) falls back to
+  endpoint ran the bundled plumesign; unpackaged (`go run`) falls back to
   the system PATH.
 
 ## Milestones

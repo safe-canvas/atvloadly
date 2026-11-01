@@ -9,6 +9,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -599,37 +600,10 @@ func route(fi *fiber.App) {
 			manager.CleanUploadTempFiles(ipaPath)
 			return c.Status(http.StatusOK).JSON(apiError(err.Error()))
 		}
-		if len(devices) == 0 {
+		selectedDevice, err := selectInstallDevice(devices, deviceID)
+		if err != nil {
 			manager.CleanUploadTempFiles(ipaPath)
-			return c.Status(http.StatusOK).JSON(apiError("no available devices found"))
-		}
-
-		var selectedDevice model.Device
-		if deviceID != "" {
-			found := false
-			for _, d := range devices {
-				if d.ID == deviceID {
-					selectedDevice = d
-					found = true
-					break
-				}
-			}
-			if !found {
-				manager.CleanUploadTempFiles(ipaPath)
-				return c.Status(http.StatusOK).JSON(apiError("device_id not found: " + deviceID))
-			}
-		} else {
-			atvDevices := []model.Device{}
-			for _, d := range devices {
-				if d.DeviceClass == string(model.DeviceClassAppleTV) {
-					atvDevices = append(atvDevices, d)
-				}
-			}
-			if len(atvDevices) == 0 {
-				manager.CleanUploadTempFiles(ipaPath)
-				return c.Status(http.StatusOK).JSON(apiError("no Apple TV devices found"))
-			}
-			selectedDevice = atvDevices[0]
+			return c.Status(http.StatusOK).JSON(apiError(err.Error()))
 		}
 
 		appModel := model.InstalledApp{
@@ -887,6 +861,17 @@ func route(fi *fiber.App) {
 		return c.Status(http.StatusOK).JSON(apiSuccess(true))
 	})
 
+	// The accounts that have Anisette data stored, read from the engine. This
+	// is the source for the reset list, so data left behind by a failed login
+	// (an account missing from the account list) can still be reset.
+	api.Get("/settings/anisette/accounts", func(c *fiber.Ctx) error {
+		accounts, err := manager.AnisetteAccounts()
+		if err != nil {
+			return c.Status(http.StatusOK).JSON(apiError(err.Error()))
+		}
+		return c.Status(http.StatusOK).JSON(apiSuccess(accounts))
+	})
+
 	// Reset one account's Anisette data through the engine; a new device
 	// identity is generated the next time that account is used.
 	api.Post("/settings/reset/anisette", func(c *fiber.Ctx) error {
@@ -901,6 +886,25 @@ func route(fi *fiber.App) {
 		}
 		if err := manager.ResetAnisette(req.Email); err != nil {
 			return c.Status(http.StatusOK).JSON(apiError("reset failed: " + err.Error()))
+		}
+		return c.Status(http.StatusOK).JSON(apiSuccess(true))
+	})
+
+	// Delete one account's leftover Anisette data directory through the engine.
+	// Used for an account no longer in the account list, where a reset (which
+	// regenerates a device identity on next login) does not apply.
+	api.Post("/settings/remove/anisette", func(c *fiber.Ctx) error {
+		var req struct {
+			Email string `json:"email"`
+		}
+		if err := c.BodyParser(&req); err != nil {
+			return c.Status(http.StatusOK).JSON(apiError("Invalid argument"))
+		}
+		if strings.TrimSpace(req.Email) == "" {
+			return c.Status(http.StatusOK).JSON(apiError("email is required"))
+		}
+		if err := manager.RemoveAnisette(req.Email); err != nil {
+			return c.Status(http.StatusOK).JSON(apiError("remove failed: " + err.Error()))
 		}
 		return c.Status(http.StatusOK).JSON(apiSuccess(true))
 	})
@@ -952,6 +956,33 @@ func route(fi *fiber.App) {
 		}
 	})
 
+}
+
+// selectInstallDevice picks the install target: the device with deviceID, or
+// the only available device when deviceID is empty. Several devices without
+// a deviceID is refused rather than guessed.
+func selectInstallDevice(devices []model.Device, deviceID string) (model.Device, error) {
+	if len(devices) == 0 {
+		return model.Device{}, fmt.Errorf("no available devices found")
+	}
+	if deviceID != "" {
+		for _, d := range devices {
+			if d.ID == deviceID {
+				return d, nil
+			}
+		}
+		return model.Device{}, fmt.Errorf("device_id not found: %s", deviceID)
+	}
+	if len(devices) == 1 {
+		return devices[0], nil
+	}
+
+	choices := make([]string, 0, len(devices))
+	for _, d := range devices {
+		choices = append(choices, fmt.Sprintf("%s (%s, %s)", d.ID, d.Name, d.DeviceClass))
+	}
+	sort.Strings(choices)
+	return model.Device{}, fmt.Errorf("several devices are available, device_id is required: %s", strings.Join(choices, ", "))
 }
 
 // removeUploadArtifacts removes the temp files of already parsed uploads in a

@@ -3,6 +3,18 @@
   "tray": {
     "open_browser": "Otvori u pregledaču",
     "open_log": "Otvori datoteku evidencije",
+    "open_at_login": "Pokreni pri prijavljivanju",
+    "settings": "Podešavanja",
+    "settings_title": "Podešavanja",
+    "settings_description": "Promene stupaju na snagu nakon ponovnog pokretanja aplikacije.",
+    "settings_port_label": "Port servera",
+    "settings_lan_label": "Dozvoli pristup sa LAN mreže",
+    "settings_lan_help": "Prihvati i veze iz lokalne mreže (IPv4).",
+    "settings_save": "Sačuvaj",
+    "settings_cancel": "Otkaži",
+    "settings_saved": "Podešavanja su sačuvana. Ponovo pokrenite aplikaciju da bi se primenila.",
+    "settings_invalid_port": "Unesite važeći TCP port između 1 i 65535.",
+    "settings_save_error": "Čuvanje podešavanja nije uspelo.",
     "quit": "Izađi"
   },
   "common": {
@@ -506,13 +518,14 @@
       "update_coreadi_confirm": "Da li ste sigurni da želite da ažurirate CoreADI biblioteke?",
       "anisette_server": "Anisette server",
       "anisette_server_default_tag": "Podrazumevani",
-      "anisette_server_tips": "Ostavite prazno za podrazumevani server. Promena servera čini postojeće Anisette podatke nevažećim; resetujte nalog ako zahtevi počnu da otkazuju.",
+      "anisette_server_tips": "Ostavite prazno za podrazumevani server. Ako zahtevi i dalje ne uspevaju nakon promene servera, pokušajte da resetujete ili obrišete Anisette podatke naloga.",
       "save": "Sačuvaj",
-      "reset_anisette": "Resetuj Anisette podatke",
-      "reset_anisette_select": "Izaberite nalog",
-      "reset_anisette_empty": "Anisette podaci se resetuju po nalogu. Prvo dodajte Apple ID nalog.",
+      "reset_anisette": "Anisette podaci",
+      "reset_anisette_empty": "Nijedan nalog nema sačuvane Anisette podatke.",
       "reset_anisette_confirm": "Da li ste sigurni da želite da resetujete Anisette podatke za {{email}}? Novi identitet uređaja biće kreiran pri sledećem korišćenju, pa se nalog mora ponovo prijaviti.",
+      "remove_anisette_confirm": "Ovaj nalog više nije prijavljen. Da li ste sigurni da želite da obrišete njegove preostale Anisette podatke?",
       "reset": "Resetuj",
+      "delete": "Obriši",
       "cancel": "Otkaži",
       "confirm": "Potvrdi",
       "toast": {
@@ -521,6 +534,8 @@
         "failed": "Ažuriranje nije uspelo",
         "reset_success": "Anisette podaci za {{email}} su resetovani",
         "reset_failed": "Resetovanje nije uspelo",
+        "remove_success": "Anisette podaci za {{email}} su obrisani",
+        "remove_failed": "Brisanje nije uspelo",
         "server_success": "Anisette server je sačuvan",
         "server_failed": "Čuvanje Anisette servera nije uspelo"
       }
@@ -671,6 +686,10 @@
       "submit": "Započni uparivanje"
     },
     "iphone": {
+      "warning1": "Uverite se da je režim programera uključen na iPhone-u i da je verzija sistema iOS 17.4+.",
+      "warning2": "Koristite <a href=\"https://github.com/jkcoxson/idevice_pair\" target=\"_blank\" class=\"link\">idevice_pair</a> da izvezete datoteku za uparivanje u RPPairing režimu i omogućite Wireless Debugging.",
+      "warning3": "Automatsko osvežavanje na iPhone-u nije garantovano stabilno; iPhone mora biti otključan da bi daljinsko osvežavanje radilo.",
+      "warning4": "Povezivanje preko Tailscale IP adrese zahteva da iPhone bude povezan na Wi-Fi.",
       "device_label": "iPhone uređaj",
       "device_placeholder": "npr. 192.168.1.205, ili izaberite uređaj",
       "device_tips": "iPhone mora biti otključan da bi bio otkriven i povezan; podržana je lokalna IP adresa ili Tailscale IP adresa",

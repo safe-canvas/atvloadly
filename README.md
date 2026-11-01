@@ -1,21 +1,24 @@
 <p align="center">
-  <img width="500" src="./doc/preview/logo.svg">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./docs/preview/logo_dark.svg">
+    <img width="500" src="./docs/preview/logo.svg" alt="atvloadly">
+  </picture>
 </p>
 
 
 <div align="center">
 
-[![platform](https://img.shields.io/badge/platform-linux%20%7C%20openwrt%20%7C%20macos%20%7C%20windows-989898)](https://github.com/bitxeno/atvloadly/internal/releases)
+[![platform](https://img.shields.io/badge/platform-linux%20%7C%20openwrt%20%7C%20macos%20%7C%20windows-989898)](https://github.com/bitxeno/atvloadly/releases)
 [![release](https://img.shields.io/docker/v/bitxeno/atvloadly?label=docker%20latest&sort=semver)](https://hub.docker.com/r/bitxeno/atvloadly)
 [![Docker Image Size](https://img.shields.io/docker/image-size/bitxeno/atvloadly)](https://hub.docker.com/r/bitxeno/atvloadly)
 [![Docker Pulls](https://img.shields.io/docker/pulls/bitxeno/atvloadly)](https://hub.docker.com/r/bitxeno/atvloadly)
-[![license](https://img.shields.io/github/license/bitxeno/atvloadly)](https://github.com/bitxeno/atvloadly/internal/blob/master/LICENSE)
+[![license](https://img.shields.io/github/license/bitxeno/atvloadly)](https://github.com/bitxeno/atvloadly/blob/master/LICENSE)
 
 </div>
 
 <div align="center">
 
-English | [Svenska](./README_sv.md) | [中文](./README_cn.md)
+English | [Svenska](docs/readme/README_sv.md) | [中文](docs/readme/README_cn.md) | [Српски (ћирилица)](docs/readme/README_sr.md) | [Srpski (latinica)](docs/readme/README_sr_Latn.md)
 
 </div>
 
@@ -35,17 +38,17 @@ atvloadly is a web service that supports sideloading app on Apple TV. It uses [I
 ## Screenshots
 
 <p align="center">
-  <img width="600" src="./doc/preview/home_en.png">
+  <img width="600" src="./docs/preview/home_en.png">
 </p>
 <p align="center">
-  <img width="600" src="./doc/preview/install_en.png">
+  <img width="600" src="./docs/preview/install_en.png">
 </p>
 
 ## Installation
 
 ### Docker (Linux/OpenWrt)
 
-1. The Linux/OpenWrt host needs to install `avahi-deamon`.
+1. The Linux/OpenWrt host needs to install `avahi-daemon`.
    
    **OpenWrt：**
    ```
@@ -119,7 +122,7 @@ If you already own a code signing certificate, you can import its `.p12` (with i
 
 The private keys are stored encrypted with a deployment key file (`signing.key_file`, default `/data/keys/signing-identity.key`): back it up together with the database. atvloadly has no authentication, so keep it on a trusted network.
 
-[>> External certificate guide](./doc/external-certificate.md)
+[>> External certificate guide](./docs/external-certificate.md)
 
 ## FAQ
 

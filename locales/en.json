@@ -3,6 +3,18 @@
     "tray": {
         "open_browser": "Open in Browser",
         "open_log": "Open Log File",
+        "open_at_login": "Open at Login",
+        "settings": "Settings",
+        "settings_title": "Settings",
+        "settings_description": "Changes take effect after restarting the app.",
+        "settings_port_label": "Server Port",
+        "settings_lan_label": "Allow LAN Access",
+        "settings_lan_help": "Also accept connections from this local network (IPv4).",
+        "settings_save": "Save",
+        "settings_cancel": "Cancel",
+        "settings_saved": "Settings saved. Restart the app to apply them.",
+        "settings_invalid_port": "Enter a valid TCP port between 1 and 65535.",
+        "settings_save_error": "Could not save the settings.",
         "quit": "Quit"
     },
     "common": {
@@ -509,13 +521,14 @@
                 "update_coreadi_confirm": "Are you sure you want update the CoreADI libraries?",
                 "anisette_server": "Anisette Server",
                 "anisette_server_default_tag": "Default",
-                "anisette_server_tips": "Leave empty to use the default server. Changing the server invalidates existing anisette data; reset the account if requests start failing.",
+                "anisette_server_tips": "Leave empty to use the default server. If requests still fail after changing the server, try resetting or deleting the Anisette data of the account.",
                 "save": "Save",
-                "reset_anisette": "Reset Anisette Data",
-                "reset_anisette_select": "Select an account",
-                "reset_anisette_empty": "Anisette data is reset per account. Add an Apple ID account first.",
+                "reset_anisette": "Anisette Data",
+                "reset_anisette_empty": "No account has Anisette data stored.",
                 "reset_anisette_confirm": "Are you sure you want to reset the Anisette data of {{email}}? A new device identity is generated on its next use, so the account must log in again.",
+                "remove_anisette_confirm": "This account is no longer signed in. Are you sure you want to delete its leftover Anisette data?",
                 "reset": "Reset",
+                "delete": "Delete",
                 "cancel": "Cancel",
                 "confirm": "Confirm",
                 "toast": {
@@ -524,6 +537,8 @@
                     "failed": "Update failed",
                     "reset_success": "Anisette data of {{email}} reset",
                     "reset_failed": "Reset failed",
+                    "remove_success": "Anisette data of {{email}} deleted",
+                    "remove_failed": "Delete failed",
                     "server_success": "Anisette server saved",
                     "server_failed": "Saving anisette server failed"
                 }
@@ -672,6 +687,10 @@
             "submit": "Start Pairing"
         },
         "iphone": {
+            "warning1": "Make sure Developer Mode is enabled on the iPhone and the system version is iOS 17.4+.",
+            "warning2": "Use <a href=\"https://github.com/jkcoxson/idevice_pair\" target=\"_blank\" class=\"link\">idevice_pair</a> to export the Pairing File in RPPairing mode and enable Wireless Debugging.",
+            "warning3": "Automatic refresh on iPhone is not guaranteed to be reliable; the iPhone must be unlocked for remote refresh to work properly.",
+            "warning4": "Connecting via a Tailscale IP address requires the iPhone to be connected to Wi-Fi.",
             "device_label": "iPhone Device",
             "device_placeholder": "e.g. 192.168.1.205, or pick a device",
             "device_tips": "The iPhone must be unlocked to be discovered and connected; supports a LAN IP address or a Tailscale IP address",

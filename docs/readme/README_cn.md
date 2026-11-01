@@ -1,21 +1,24 @@
 <p align="center">
-  <img width="500" src="./doc/preview/logo.svg">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../preview/logo_dark.svg">
+    <img width="500" src="../preview/logo.svg" alt="atvloadly">
+  </picture>
 </p>
 
 
 <div align="center">
 
-[![platform](https://img.shields.io/badge/platform-linux%20%7C%20openwrt%20%7C%20macos%20%7C%20windows-989898)](https://github.com/bitxeno/atvloadly/internal/releases)
+[![platform](https://img.shields.io/badge/platform-linux%20%7C%20openwrt%20%7C%20macos%20%7C%20windows-989898)](https://github.com/bitxeno/atvloadly/releases)
 [![release](https://img.shields.io/docker/v/bitxeno/atvloadly?label=docker%20latest&sort=semver)](https://hub.docker.com/r/bitxeno/atvloadly)
 [![Docker Image Size](https://img.shields.io/docker/image-size/bitxeno/atvloadly)](https://hub.docker.com/r/bitxeno/atvloadly)
 [![Docker Pulls](https://img.shields.io/docker/pulls/bitxeno/atvloadly)](https://hub.docker.com/r/bitxeno/atvloadly)
-[![license](https://img.shields.io/github/license/bitxeno/atvloadly)](https://github.com/bitxeno/atvloadly/internal/blob/master/LICENSE)
+[![license](https://img.shields.io/github/license/bitxeno/atvloadly)](https://github.com/bitxeno/atvloadly/blob/master/LICENSE)
 
 </div>
 
 <div align="center">
 
-[English](./README.md) | [Svenska](./README_sv.md) | 中文
+[English](../../README.md) | [Svenska](README_sv.md) | 中文 | [Српски (ћирилица)](README_sr.md) | [Srpski (latinica)](README_sr_Latn.md)
 
 </div>
 
@@ -36,10 +39,10 @@ atvloadly 是一个支持在 AppleTV 上侧载应用的 web 服务。底层通�
 ## 截图
 
 <p align="center">
-  <img width="600" src="./doc/preview/home.png">
+  <img width="600" src="../preview/home.png">
 </p>
 <p align="center">
-  <img width="600" src="./doc/preview/install.png">
+  <img width="600" src="../preview/install.png">
 </p>
 
 ## 安装
@@ -119,7 +122,7 @@ brew install --cask bitxeno/tap/atvloadly
 
 私钥使用部署密钥文件加密存储（配置项 `signing.key_file`，默认 `/data/keys/signing-identity.key`），请将其与数据库一起备份。atvloadly 没有登录鉴权，请只在可信网络中使用。
 
-[>> 外部证书使用说明（英文）](./doc/external-certificate.md)
+[>> 外部证书使用说明（英文）](../external-certificate.md)
 
 ## 常见问题
 

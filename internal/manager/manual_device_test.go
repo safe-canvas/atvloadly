@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -12,6 +13,22 @@ import (
 
 	"github.com/bitxeno/atvloadly/internal/model"
 )
+
+// setSideloadDataDir points the PlumeImpactor data directory at a temp dir for
+// the current OS and returns its pairing_files directory. It mirrors the
+// engine's own resolution (%APPDATA% on Windows, $XDG_CONFIG_HOME elsewhere),
+// so the tests do not depend on the developer's real config directory.
+func setSideloadDataDir(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+	t.Setenv("HOME", dir)
+	if runtime.GOOS == "windows" {
+		t.Setenv("APPDATA", filepath.Join(dir, "AppData", "Roaming"))
+		return filepath.Join(dir, "AppData", "Roaming", "PlumeImpactor", "pairing_files")
+	}
+	t.Setenv("XDG_CONFIG_HOME", filepath.Join(dir, ".config"))
+	return filepath.Join(dir, ".config", "PlumeImpactor", "pairing_files")
+}
 
 func writeJSON(t *testing.T, dir, name, content string) {
 	t.Helper()
@@ -43,6 +60,33 @@ func TestLoadManualDevicesFromDir(t *testing.T) {
 	}
 }
 
+func TestLoadManualDevicesConcurrentReaders(t *testing.T) {
+	dir := t.TempDir()
+	writeJSON(t, dir, "AAA.json", `{"manual":true,"model":"iPhone14,4","name":"Phone","remotepairing_ip":"100.65.100.37","remotepairing_udid":"AAA"}`)
+
+	dm := newDeviceManager()
+	dm.loadManualDevicesFromDir(dir)
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		for i := 0; i < 200; i++ {
+			dm.loadManualDevicesFromDir(dir)
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		for i := 0; i < 200; i++ {
+			_ = dm.GetDevices()
+		}
+	}()
+	wg.Wait()
+	if got := dm.GetDevices(); len(got) != 1 {
+		t.Fatalf("want 1 manual device after reload, got %d", len(got))
+	}
+}
+
 func TestManualDeviceDedupedByDiscovered(t *testing.T) {
 	dir := t.TempDir()
 	writeJSON(t, dir, "AAA.json", `{"manual":true,"model":"iPhone14,4","name":"Phone","remotepairing_ip":"100.65.100.37","remotepairing_udid":"AAA"}`)
@@ -62,9 +106,7 @@ func TestManualDeviceDedupedByDiscovered(t *testing.T) {
 }
 
 func TestDeleteManualDeviceRemovesBothFiles(t *testing.T) {
-	dir := t.TempDir()
-	t.Setenv("HOME", dir)
-	pdir := filepath.Join(dir, ".config", "PlumeImpactor", "pairing_files")
+	pdir := setSideloadDataDir(t)
 	if err := os.MkdirAll(pdir, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -338,9 +380,7 @@ func TestIsManualDeviceAddr(t *testing.T) {
 }
 
 func TestWarmManualDevicePortResolves(t *testing.T) {
-	dir := t.TempDir()
-	t.Setenv("HOME", dir)
-	pdir := filepath.Join(dir, ".config", "PlumeImpactor", "pairing_files")
+	pdir := setSideloadDataDir(t)
 	if err := os.MkdirAll(pdir, 0o755); err != nil {
 		t.Fatal(err)
 	}
