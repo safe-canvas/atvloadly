@@ -15,7 +15,9 @@
         "settings_saved": "Settings saved. Restart the app to apply them.",
         "settings_invalid_port": "Enter a valid TCP port between 1 and 65535.",
         "settings_save_error": "Could not save the settings.",
-        "quit": "Quit"
+        "quit": "Quit",
+        "update_available": "Update Available: {{.version}}",
+        "update_notification": "You are running {{.current}}. Click to view the release."
     },
     "common": {
         "loading": "Loading...",
@@ -32,7 +34,9 @@
         "update_available": "{{.name}}: {{.version}} is available\n",
         "update_attention": "{{.name}}: update needs attention: {{.error}}\n",
         "update_installed_title": "atvloadly: apps updated",
-        "update_installed": "{{.name}} updated to {{.version}}\n"
+        "update_installed": "{{.name}} updated to {{.version}}\n",
+        "release_title": "atvloadly {{.version}} is available",
+        "release_content": "You are running {{.current}}.\n{{.url}}"
     },
     "nav": {
         "settings": "Settings",
@@ -66,6 +70,11 @@
         "fail": "Failed"
     },
     "home": {
+        "release_banner": {
+            "message": "atvloadly {{version}} is available. You are running {{current}}.",
+            "view": "View release",
+            "dismiss": "Dismiss"
+        },
         "heading": {
             "paired_devices": "Paired Devices",
             "service_status": "Service Status",
@@ -315,6 +324,13 @@
                 "placeholder": "Leave blank to keep the app's own name",
                 "tips": "Renames the app on the home screen. The bundle identifier is unchanged, so the app is still replaced on refresh."
             },
+            "custom_icon": {
+              "tips": "Replace the app icon on the home screen. Click to choose an image (PNG, JPEG or GIF); it is stored with the app and reused on every refresh and update.",
+              "choose": "Choose an icon",
+              "empty": "No icon",
+              "remove": "Remove icon",
+              "preview_alt": "Custom app icon"
+            },
             "password": {
                 "label": "Apple Password:"
             },
@@ -461,6 +477,10 @@
                 "off": "Off",
                 "every_hour": "Every hour",
                 "every_hours": "Every {{num}} hours"
+            },
+            "release_notify": {
+                "label": "New atvloadly releases",
+                "tips": "Notify when a new version of atvloadly is released. Uses the notification channel above, and on the desktop app a system notification."
             },
             "github_token": {
                 "label": "GitHub Token",
@@ -900,6 +920,7 @@
             "device_not_provisioned": "This device is not included in the provisioning profile.",
             "ipa_invalid": "The IPA file is invalid or cannot be read.",
             "ipa_path_rejected": "The IPA file is not an uploaded or installed IPA. Upload it again.",
+            "custom_icon_invalid": "The custom app icon is not a readable image. Upload a PNG, JPEG or GIF image again.",
             "nested_bundles_not_signed": "An app nested inside another app cannot be signed with the provisioning profile.",
             "bundle_identifier_rewritten": "The bundle identifier will be changed to the custom identifier; the identifiers of the app extensions follow it.",
             "extension_removed": "An extension will be removed from the app.",

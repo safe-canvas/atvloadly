@@ -15,7 +15,9 @@
     "settings_saved": "Inställningarna har sparats. Starta om appen för att tillämpa dem.",
     "settings_invalid_port": "Ange en giltig TCP-port mellan 1 och 65535.",
     "settings_save_error": "Det gick inte att spara inställningarna.",
-    "quit": "Avsluta"
+    "quit": "Avsluta",
+    "update_available": "Uppdatering tillgänglig: {{.version}}",
+    "update_notification": "Du kör {{.current}}. Klicka för att visa versionen."
   },
   "common": {
     "loading": "Laddar…",
@@ -32,7 +34,9 @@
     "update_available": "{{.name}}: {{.version}} finns tillgänglig\n",
     "update_attention": "{{.name}}: uppdateringen kräver åtgärd: {{.error}}\n",
     "update_installed_title": "atvloadly: appar uppdaterade",
-    "update_installed": "{{.name}} har uppdaterats till {{.version}}\n"
+    "update_installed": "{{.name}} har uppdaterats till {{.version}}\n",
+    "release_title": "atvloadly {{.version}} finns tillgänglig",
+    "release_content": "Du kör {{.current}}.\n{{.url}}"
   },
   "nav": {
     "settings": "Inställningar",
@@ -66,6 +70,11 @@
     "fail": "Misslyckades"
   },
   "home": {
+    "release_banner": {
+      "message": "atvloadly {{version}} finns tillgänglig. Du kör {{current}}.",
+      "view": "Visa version",
+      "dismiss": "Stäng"
+    },
     "heading": {
       "paired_devices": "Parkopplade enheter",
       "service_status": "Tjänststatus",
@@ -314,6 +323,13 @@
         "placeholder": "Lämna tomt för att behålla appens namn",
         "tips": "Byter namn på appen på hemskärmen. Paketidentifieraren ändras inte, så appen ersätts fortfarande vid förnyelse."
       },
+      "custom_icon": {
+        "tips": "Byt ut appens ikon på hemskärmen. Klicka för att välja en bild (PNG, JPEG eller GIF); den sparas med appen och används igen vid varje förnyelse och uppdatering.",
+        "choose": "Välj ikon",
+        "empty": "Ingen ikon",
+        "remove": "Ta bort ikon",
+        "preview_alt": "Anpassad appikon"
+      },
       "password": {
         "label": "Apple-lösenord:"
       },
@@ -459,6 +475,10 @@
         "off": "Av",
         "every_hour": "Varje timme",
         "every_hours": "Var {{num}}:e timme"
+      },
+      "release_notify": {
+        "label": "Nya versioner av atvloadly",
+        "tips": "Meddela när en ny version av atvloadly släpps. Använder aviseringskanalen ovan, och i skrivbordsappen en systemavisering."
       },
       "github_token": {
         "label": "GitHub-token",
@@ -899,6 +919,7 @@
       "device_not_provisioned": "Enheten finns inte med i provisioneringsprofilen.",
       "ipa_invalid": "IPA-filen är ogiltig eller kan inte läsas.",
       "ipa_path_rejected": "IPA-filen är inte en uppladdad eller installerad IPA. Ladda upp den igen.",
+      "custom_icon_invalid": "Den anpassade appikonen är inte en läsbar bild. Ladda upp en PNG-, JPEG- eller GIF-bild igen.",
       "nested_bundles_not_signed": "En app som ligger inuti en annan app kan inte signeras med provisioneringsprofilen.",
       "bundle_identifier_rewritten": "Paket-ID:t ändras till det anpassade paket-ID:t; apptilläggens paket-ID:n följer med.",
       "extension_removed": "Ett tillägg tas bort från appen.",
