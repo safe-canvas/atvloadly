@@ -50,6 +50,8 @@
         "preferences": "Preferences",
         "account": "Accounts",
         "devices": "Devices",
+        "expand_sidebar": "Expand sidebar",
+        "collapse_sidebar": "Collapse sidebar",
         "donate": "Donate",
         "about": "About"
     },
@@ -119,7 +121,8 @@
                 "ip_badge": "IP",
                 "forget": "Delete",
                 "forget_confirm": "Confirm",
-                "forget_done": "Device forgotten"
+                "forget_done": "Device deleted",
+                "more": "More"
             },
             "tips": {
                 "no_paired_devices": "No connected devices",

@@ -50,6 +50,8 @@
         "preferences": "选项",
         "account": "帐号",
         "devices": "设备",
+        "expand_sidebar": "展开侧栏",
+        "collapse_sidebar": "收起侧栏",
         "donate": "赞助",
         "about": "关于"
     },
@@ -119,7 +121,8 @@
                 "ip_badge": "IP",
                 "forget": "删除",
                 "forget_confirm": "确认",
-                "forget_done": "已忘记设备"
+                "forget_done": "已忘记设备",
+                "more": "更多"
             },
             "tips": {
                 "no_paired_devices": "没有连接设备",
